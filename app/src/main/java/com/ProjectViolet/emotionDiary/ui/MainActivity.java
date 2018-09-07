@@ -1,4 +1,4 @@
-package com.lizehao.watermelondiarynew.ui;
+package com.ProjectViolet.emotionDiary.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,14 +17,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.lizehao.watermelondiarynew.R;
-import com.lizehao.watermelondiarynew.bean.DiaryBean;
-import com.lizehao.watermelondiarynew.db.DiaryDatabaseHelper;
-import com.lizehao.watermelondiarynew.event.StartUpdateDiaryEvent;
-import com.lizehao.watermelondiarynew.utils.AppManager;
-import com.lizehao.watermelondiarynew.utils.GetDate;
-import com.lizehao.watermelondiarynew.utils.SpHelper;
-import com.lizehao.watermelondiarynew.utils.StatusBarCompat;
+import com.ProjectViolet.emotionDiary.R;
+import com.ProjectViolet.emotionDiary.bean.DiaryBean;
+import com.ProjectViolet.emotionDiary.db.DiaryDatabaseHelper;
+import com.ProjectViolet.emotionDiary.event.StartUpdateDiaryEvent;
+import com.ProjectViolet.emotionDiary.utils.AppManager;
+import com.ProjectViolet.emotionDiary.utils.GetDate;
+import com.ProjectViolet.emotionDiary.utils.SpHelper;
+import com.ProjectViolet.emotionDiary.utils.StatusBarCompat;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

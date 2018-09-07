@@ -1,4 +1,4 @@
-package com.lizehao.watermelondiarynew.ui;
+package com.ProjectViolet.emotionDiary.ui;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -16,12 +16,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.lizehao.watermelondiarynew.R;
-import com.lizehao.watermelondiarynew.db.DiaryDatabaseHelper;
-import com.lizehao.watermelondiarynew.utils.AppManager;
-import com.lizehao.watermelondiarynew.utils.GetDate;
-import com.lizehao.watermelondiarynew.utils.StatusBarCompat;
-import com.lizehao.watermelondiarynew.widget.LinedEditText;
+import com.ProjectViolet.emotionDiary.R;
+import com.ProjectViolet.emotionDiary.db.DiaryDatabaseHelper;
+import com.ProjectViolet.emotionDiary.utils.AppManager;
+import com.ProjectViolet.emotionDiary.utils.GetDate;
+import com.ProjectViolet.emotionDiary.utils.StatusBarCompat;
+import com.ProjectViolet.emotionDiary.widget.LinedEditText;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

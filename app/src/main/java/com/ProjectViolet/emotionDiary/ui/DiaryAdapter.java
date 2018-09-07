@@ -1,4 +1,4 @@
-package com.lizehao.watermelondiarynew.ui;
+package com.ProjectViolet.emotionDiary.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.lizehao.watermelondiarynew.R;
-import com.lizehao.watermelondiarynew.bean.DiaryBean;
-import com.lizehao.watermelondiarynew.event.StartUpdateDiaryEvent;
-import com.lizehao.watermelondiarynew.utils.GetDate;
+import com.ProjectViolet.emotionDiary.R;
+import com.ProjectViolet.emotionDiary.bean.DiaryBean;
+import com.ProjectViolet.emotionDiary.event.StartUpdateDiaryEvent;
+import com.ProjectViolet.emotionDiary.utils.GetDate;
 
 import org.greenrobot.eventbus.EventBus;
 

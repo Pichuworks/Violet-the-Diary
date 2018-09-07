@@ -1,4 +1,4 @@
-package com.lizehao.watermelondiarynew;
+package com.ProjectViolet.emotionDiary;
 
 import org.junit.Test;
 

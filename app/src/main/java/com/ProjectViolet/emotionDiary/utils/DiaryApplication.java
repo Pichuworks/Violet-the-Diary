@@ -1,4 +1,4 @@
-package com.lizehao.watermelondiarynew.utils;
+package com.ProjectViolet.emotionDiary.utils;
 
 import android.app.Application;
 
