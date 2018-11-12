@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ProjectViolet.emotionDiary.R;
 import com.ProjectViolet.emotionDiary.bean.DiaryBean;
@@ -170,6 +171,18 @@ public class MainActivity extends AppCompatActivity {
         AddDiaryActivity.startActivity(this);
     }
 
+    /***
+    @OnClick({R.id.item_rl_analysis, R.id.main_fab_enter_edit})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.main_fab_enter_edit:
+                AddDiaryActivity.startActivity(this);
+            case R.id.item_rl_analysis:
+                Toast.makeText(MainActivity.this,"dianji",Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+     ****/
     @Override
     public void onBackPressed() {
         super.onBackPressed();

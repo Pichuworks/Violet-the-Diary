@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ProjectViolet.emotionDiary.R;
 import com.ProjectViolet.emotionDiary.bean.DiaryBean;
@@ -76,6 +77,19 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
                 EventBus.getDefault().post(new StartUpdateDiaryEvent(position));
             }
         });
+
+        /***/
+        holder.manalyse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.manalyse.setVisibility(View.INVISIBLE);
+                /**/
+            }
+        });
+        /***/
+
+
+
     }
 
     @Override
@@ -89,6 +103,8 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         TextView mTvTitle;
         TextView mTvContent;
         ImageView mIvEdit;
+        ImageView manalyse;
+
         LinearLayout mLlTitle;
         LinearLayout mLl;
         ImageView mIvCircle;
@@ -102,6 +118,8 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
             mTvTitle = (TextView) view.findViewById(R.id.main_tv_title);
             mTvContent = (TextView) view.findViewById(R.id.main_tv_content);
             mIvEdit = (ImageView) view.findViewById(R.id.main_iv_edit);
+            manalyse= (ImageView) view.findViewById(R.id.main_iv_analysis);
+
             mLlTitle = (LinearLayout) view.findViewById(R.id.main_ll_title);
             mLl = (LinearLayout) view.findViewById(R.id.item_ll);
             mLlControl = (LinearLayout) view.findViewById(R.id.item_ll_control);
