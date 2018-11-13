@@ -89,7 +89,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         }
 
         // 自动刷新 又不是不能用 START
-        holder.manalyse.setVisibility(View.INVISIBLE);
+        // holder.manalyse.setVisibility(View.INVISIBLE);
         Log.d("manalyse","AutoFlash");
 
         String url = baseURL + mDiaryBeanList.get(position).getContent();
@@ -115,12 +115,15 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
 
         // 睡眠同步 又不是不能用
         try {
-            sleep(500);
+            sleep(100);
+            holder.analyResDisp.setText(result);
+            if(result != "未进行心情判断")
+                holder.manalyse.setVisibility(View.INVISIBLE);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        holder.analyResDisp.setText(result);
+
 
         // 自动刷新 又不是不能用 END
 
