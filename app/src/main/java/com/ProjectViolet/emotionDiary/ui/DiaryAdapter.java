@@ -115,7 +115,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
 
         // 睡眠同步 又不是不能用
         try {
-            sleep(100);
+            sleep(250);
             holder.analyResDisp.setText(result);
             if(result != "未进行心情判断")
                 holder.manalyse.setVisibility(View.INVISIBLE);
