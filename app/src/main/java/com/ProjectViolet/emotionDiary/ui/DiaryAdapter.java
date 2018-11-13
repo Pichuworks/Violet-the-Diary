@@ -20,8 +20,29 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import android.os.Bundle;
+import android.util.Log;
+
 /**
- * Created by 李 on 2017/1/26.
+ * Diary Adapter
  */
 public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder> {
 
@@ -29,6 +50,8 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
     private LayoutInflater mLayoutInflater;
     private List<DiaryBean> mDiaryBeanList;
     private int mEditPosition = -1;
+
+    private String baseURL = "http://47.100.0.222:2000/emotion/get?text=";
 
     public DiaryAdapter(Context context, List<DiaryBean> mDiaryBeanList){
         mContext = context;
@@ -82,13 +105,62 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         holder.manalyse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.manalyse.setVisibility(View.INVISIBLE);
+                // holder.manalyse.setVisibility(View.INVISIBLE);
+                Log.d("manalyse","setOnClickListener");
+                String url = baseURL + mDiaryBeanList.get(position).getContent();
+                final HttpGet httpGet = new HttpGet(url);
+                final HttpClient httpClient = new DefaultHttpClient();
+
+                new Thread(new Runnable(){
+                    @Override
+                    public void run() {
+                        // 发送请求
+                        try
+                        {
+                            HttpResponse response = httpClient.execute(httpGet);
+                            showResponseResult(response);   // 显示返回结果
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+
                 /**/
             }
         });
         /***/
 
+    }
 
+    private void showResponseResult(HttpResponse response)
+    {
+        if (null == response)
+        {
+            return;
+        }
+
+        HttpEntity httpEntity = response.getEntity();
+        try
+        {
+            InputStream inputStream = httpEntity.getContent();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    inputStream));
+            String result = "";
+            String line = "";
+            while (null != (line = reader.readLine()))
+            {
+                result += line;
+            }
+            System.out.println(result);
+            Log.d("Analysis Result",result);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
