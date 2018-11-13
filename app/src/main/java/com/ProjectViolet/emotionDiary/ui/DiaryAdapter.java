@@ -1,6 +1,8 @@
 package com.ProjectViolet.emotionDiary.ui;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,9 +39,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.w3c.dom.Text;
 
 import android.os.Bundle;
 import android.util.Log;
+
+import static java.lang.Thread.sleep;
+
 
 /**
  * Diary Adapter
@@ -50,8 +56,10 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
     private LayoutInflater mLayoutInflater;
     private List<DiaryBean> mDiaryBeanList;
     private int mEditPosition = -1;
+    public static final int show = 0;
 
     private String baseURL = "http://47.100.0.222:2000/emotion/get?text=";
+    private String result = "未进行心情判断";
 
     public DiaryAdapter(Context context, List<DiaryBean> mDiaryBeanList){
         mContext = context;
@@ -105,9 +113,11 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         holder.manalyse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // holder.manalyse.setVisibility(View.INVISIBLE);
+                holder.manalyse.setVisibility(View.INVISIBLE);
                 Log.d("manalyse","setOnClickListener");
+
                 String url = baseURL + mDiaryBeanList.get(position).getContent();
+                url = url.replaceAll(" ", "%20");
                 final HttpGet httpGet = new HttpGet(url);
                 final HttpClient httpClient = new DefaultHttpClient();
 
@@ -118,7 +128,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
                         try
                         {
                             HttpResponse response = httpClient.execute(httpGet);
-                            showResponseResult(response);   // 显示返回结果
+                            result = showResponseResult(response);   // 显示返回结果
                         }
                         catch (Exception e)
                         {
@@ -126,6 +136,14 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
                         }
                     }
                 }).start();
+
+                try {
+                    sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                holder.analyResDisp.setText(result);
 
 
                 /**/
@@ -135,11 +153,11 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
 
     }
 
-    private void showResponseResult(HttpResponse response)
+    private String showResponseResult(HttpResponse response)
     {
         if (null == response)
         {
-            return;
+            return "未进行心情判断";
         }
 
         HttpEntity httpEntity = response.getEntity();
@@ -156,12 +174,13 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
             }
             System.out.println(result);
             Log.d("Analysis Result",result);
+            return result;
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
+        return result;
     }
 
     @Override
@@ -174,6 +193,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         TextView mTvDate;
         TextView mTvTitle;
         TextView mTvContent;
+        TextView analyResDisp;
         ImageView mIvEdit;
         ImageView manalyse;
 
@@ -191,6 +211,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
             mTvContent = (TextView) view.findViewById(R.id.main_tv_content);
             mIvEdit = (ImageView) view.findViewById(R.id.main_iv_edit);
             manalyse= (ImageView) view.findViewById(R.id.main_iv_analysis);
+            analyResDisp = (TextView) view.findViewById(R.id.main_iv_analy_res);
 
             mLlTitle = (LinearLayout) view.findViewById(R.id.main_ll_title);
             mLl = (LinearLayout) view.findViewById(R.id.item_ll);
