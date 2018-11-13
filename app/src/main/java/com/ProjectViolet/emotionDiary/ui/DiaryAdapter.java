@@ -87,6 +87,44 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         }else {
             holder.mIvEdit.setVisibility(View.GONE);
         }
+
+        // 自动刷新 又不是不能用 START
+        holder.manalyse.setVisibility(View.INVISIBLE);
+        Log.d("manalyse","AutoFlash");
+
+        String url = baseURL + mDiaryBeanList.get(position).getContent();
+        url = url.replaceAll(" ", "%20");
+        final HttpGet httpGet = new HttpGet(url);
+        final HttpClient httpClient = new DefaultHttpClient();
+
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                // 发送请求
+                try
+                {
+                    HttpResponse response = httpClient.execute(httpGet);
+                    result = showResponseResult(response);   // 显示返回结果
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        // 睡眠同步 又不是不能用
+        try {
+            sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        holder.analyResDisp.setText(result);
+
+        // 自动刷新 又不是不能用 END
+
+
         holder.mLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +175,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
                     }
                 }).start();
 
+                // 睡眠同步 又不是不能用
                 try {
                     sleep(500);
                 } catch (InterruptedException e) {
