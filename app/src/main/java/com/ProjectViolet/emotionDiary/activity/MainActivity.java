@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_login);
         initView();
 
         getData();
@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         int userType = userList.get(position).getType();
         if (type == 0) {//0:超级管理员
             if (userType == 1) { //客户
-                strings = new String[]{"修改", "删除", "设为普通管理员"};
+                strings = new String[]{"修改", "删除", "设为普通管理员","查看日记"};
             } else if (userType == 2) {
-                strings = new String[]{"修改", "删除", "取消管理员权限"};
+                strings = new String[]{"修改", "删除", "取消管理员权限","查看日记"};
             }
 
         } else if (type == 1) {//客户
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (userType == 2) {
                 strings = new String[]{};
             } else {
-                strings = new String[]{"修改", "删除"};
+                strings = new String[]{"修改", "删除","查看日记"};
             }
         }
 
@@ -106,6 +106,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         Toast.makeText(MainActivity.this, "操作成功", Toast.LENGTH_SHORT).show();
                         getData();
                     }
+                }else if (which == 3){
+                    Intent intent = new Intent(MainActivity.this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);
+                    intent.putExtra("username", userList.get(position).getUsername());
+                    Toast.makeText(MainActivity.this, userList.get(position).getUsername(), Toast.LENGTH_SHORT).show();
+                    startActivity(intent);
                 }
 
             }

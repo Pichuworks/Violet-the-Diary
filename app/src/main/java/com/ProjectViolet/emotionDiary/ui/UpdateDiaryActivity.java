@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.ProjectViolet.emotionDiary.R;
 import com.ProjectViolet.emotionDiary.db.DiaryDatabaseHelper;
 import com.ProjectViolet.emotionDiary.utils.AppManager;
+import com.ProjectViolet.emotionDiary.utils.DiaryApplication;
 import com.ProjectViolet.emotionDiary.utils.GetDate;
 import com.ProjectViolet.emotionDiary.utils.StatusBarCompat;
 import com.ProjectViolet.emotionDiary.widget.LinedEditText;
@@ -59,13 +60,16 @@ public class UpdateDiaryActivity extends AppCompatActivity {
     @Bind(R.id.update_diary_tv_tag)
     TextView mTvTag;
 
+
     private DiaryDatabaseHelper mHelper;
+    private DiaryApplication app;
 
     public static void startActivity(Context context, String title, String content, String tag) {
         Intent intent = new Intent(context, UpdateDiaryActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("content", content);
         intent.putExtra("tag", tag);
+
         context.startActivity(intent);
     }
 
@@ -99,7 +103,16 @@ public class UpdateDiaryActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.common_iv_back:
-                MainActivity.startActivity(this);
+
+                app = (DiaryApplication) getApplication(); //获得我们的应用程序MyApplication
+
+
+                Intent activity_change4= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                Bundle bundle4 = new Bundle();// 创建Bundle对象
+                bundle4.putString("username", app.getName());//  放入data值为int型
+                activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                startActivity(activity_change4);//  开始跳转
+               // MainActivity.startActivity(this);
             case R.id.update_diary_tv_date:
                 break;
             case R.id.update_diary_et_title:
@@ -111,11 +124,25 @@ public class UpdateDiaryActivity extends AppCompatActivity {
                 alertDialogBuilder.setMessage("确定要删除该日记吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-//                        String title = mUpdateDiaryEtTitle.getText().toString();
+//                      String title = mUpdateDiaryEtTitle.getText().toString();
+                        String title = mUpdateDiaryEtTitle.getText().toString();
+                        String content = mUpdateDiaryEtContent.getText().toString();
                         String tag = mTvTag.getText().toString();
+
+
                         SQLiteDatabase dbDelete = mHelper.getWritableDatabase();
-                        dbDelete.delete("Diary", "tag = ?", new String[]{tag});
-                        MainActivity.startActivity(UpdateDiaryActivity.this);
+                        dbDelete.delete("Diary", "content=?", new String[]{content});
+
+                        app = (DiaryApplication) getApplication(); //获得我们的应用程序MyApplication
+
+                        Intent activity_change4= new Intent(UpdateDiaryActivity.this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                        Bundle bundle4 = new Bundle();// 创建Bundle对象
+                        bundle4.putString("username",app.getName() );//  放入data值为int型
+                        activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                        startActivity(activity_change4);//  开始跳转
+
+
+                        //MainActivity.startActivity(UpdateDiaryActivity.this);
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -131,9 +158,12 @@ public class UpdateDiaryActivity extends AppCompatActivity {
                 valuesUpdate.put("content", content);
                 dbUpdate.update("Diary", valuesUpdate, "title = ?", new String[]{title});
                 dbUpdate.update("Diary", valuesUpdate, "content = ?", new String[]{content});
+
+
                 MainActivity.startActivity(this);
                 break;
             case R.id.update_diary_fab_delete:
+
                 MainActivity.startActivity(this);
 
                 break;

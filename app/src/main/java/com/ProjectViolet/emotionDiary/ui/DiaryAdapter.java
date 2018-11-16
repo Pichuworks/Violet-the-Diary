@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.ProjectViolet.emotionDiary.R;
 import com.ProjectViolet.emotionDiary.bean.DiaryBean;
 import com.ProjectViolet.emotionDiary.event.StartUpdateDiaryEvent;
+import com.ProjectViolet.emotionDiary.utils.DiaryApplication;
 import com.ProjectViolet.emotionDiary.utils.GetDate;
 
 import org.greenrobot.eventbus.EventBus;
@@ -60,6 +61,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
 
     private String baseURL = "http://47.100.0.222:2000/emotion/get?text=";
     private String result = "未进行心情判断";
+    public DiaryApplication app;
 
     public DiaryAdapter(Context context, List<DiaryBean> mDiaryBeanList){
         mContext = context;
@@ -80,10 +82,14 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         }
         holder.mTvDate.setText(mDiaryBeanList.get(position).getDate());
         holder.mTvTitle.setText(mDiaryBeanList.get(position).getTitle());
+//        holder.mTvId.setText(mDiaryBeanList.get(position).getId());
+
         holder.mTvContent.setText("       " + mDiaryBeanList.get(position).getContent());
         holder.mIvEdit.setVisibility(View.INVISIBLE);
         if(mEditPosition == position){
             holder.mIvEdit.setVisibility(View.VISIBLE);
+
+
         }else {
             holder.mIvEdit.setVisibility(View.GONE);
         }
@@ -92,8 +98,9 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         // holder.manalyse.setVisibility(View.INVISIBLE);
         Log.d("manalyse","AutoFlash");
 
-        String url = baseURL + mDiaryBeanList.get(position).getContent();
+        String url = baseURL + mDiaryBeanList.get(position).getTitle() + "%20" + mDiaryBeanList.get(position).getContent();
         url = url.replaceAll(" ", "%20");
+        url = url.replaceAll("\\n", "%20");
         final HttpGet httpGet = new HttpGet(url);
         final HttpClient httpClient = new DefaultHttpClient();
 
@@ -157,8 +164,9 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
                 holder.manalyse.setVisibility(View.INVISIBLE);
                 Log.d("manalyse","setOnClickListener");
 
-                String url = baseURL + mDiaryBeanList.get(position).getContent();
+                String url = baseURL + mDiaryBeanList.get(position).getTitle() + "%20" + mDiaryBeanList.get(position).getContent();
                 url = url.replaceAll(" ", "%20");
+                url = url.replaceAll("\\n", "%20");
                 final HttpGet httpGet = new HttpGet(url);
                 final HttpClient httpClient = new DefaultHttpClient();
 
@@ -232,6 +240,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
 
     public static class DiaryViewHolder extends RecyclerView.ViewHolder{
 
+        TextView mTvId;
         TextView mTvDate;
         TextView mTvTitle;
         TextView mTvContent;
@@ -245,6 +254,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
         LinearLayout mLlControl;
         RelativeLayout mRlEdit;
 
+
         DiaryViewHolder(View view){
             super(view);
             mIvCircle = (ImageView) view.findViewById(R.id.main_iv_circle);
@@ -254,6 +264,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.DiaryViewHol
             mIvEdit = (ImageView) view.findViewById(R.id.main_iv_edit);
             manalyse= (ImageView) view.findViewById(R.id.main_iv_analysis);
             analyResDisp = (TextView) view.findViewById(R.id.main_iv_analy_res);
+            mTvId=(TextView) view.findViewById(R.id.diary_id);
 
             mLlTitle = (LinearLayout) view.findViewById(R.id.main_ll_title);
             mLl = (LinearLayout) view.findViewById(R.id.item_ll);

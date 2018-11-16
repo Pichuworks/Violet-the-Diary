@@ -8,12 +8,16 @@ public class DiaryBean {
     private String title;
     private String content;
     private String tag;
+    private String id;
+    private String analysedResult;
 
-    public DiaryBean(String date, String title, String content, String tag) {
+    public DiaryBean(String date, String title, String content, String tag, String id, String analysedResult) {
         this.date = date;
         this.title = title;
         this.content = content;
         this.tag = tag;
+        this.id=id;
+        this.analysedResult = analysedResult;
     }
     public String getTag() {
         return tag;
@@ -47,6 +51,19 @@ public class DiaryBean {
         this.content = content;
     }
 
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
 
+    public void setAnalysedResult(String analysedResult) {
+        this.analysedResult = analysedResult;
+    }
+
+    public String getAnalysedResult() {
+        return analysedResult;
+    }
 }

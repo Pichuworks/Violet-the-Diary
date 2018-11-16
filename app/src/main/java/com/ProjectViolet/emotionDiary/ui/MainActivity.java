@@ -23,6 +23,7 @@ import com.ProjectViolet.emotionDiary.bean.DiaryBean;
 import com.ProjectViolet.emotionDiary.db.DiaryDatabaseHelper;
 import com.ProjectViolet.emotionDiary.event.StartUpdateDiaryEvent;
 import com.ProjectViolet.emotionDiary.utils.AppManager;
+import com.ProjectViolet.emotionDiary.utils.DiaryApplication;
 import com.ProjectViolet.emotionDiary.utils.GetDate;
 import com.ProjectViolet.emotionDiary.utils.SpHelper;
 import com.ProjectViolet.emotionDiary.utils.StatusBarCompat;
@@ -73,12 +74,15 @@ public class MainActivity extends AppCompatActivity {
     private static String IS_WRITE = "true";
 
     private int mEditPosition = -1;
+    public DiaryApplication app;
+
 
     /**
      * 标识今天是否已经写了日记
      */
     private boolean isWrite = false;
     private static TextView mTvTest;
+
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -103,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         mMainRvShowDiary.setAdapter(new DiaryAdapter(this, mDiaryBeanList));
         mTvTest = new TextView(this);
         mTvTest.setText("hello world");
+
     }
 
     private void initTitle() {
@@ -118,8 +123,12 @@ public class MainActivity extends AppCompatActivity {
         mDiaryBeanList = new ArrayList<>();
         List<DiaryBean> diaryList = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = mHelper.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.query("Diary", null, null, null, null, null, null);
+        //Cursor cursor = sqLiteDatabase.query("Diary", null, null, null, null, null, null);
+        Intent intent = getIntent();
+//        String args= intent.getExtras().get("username").toString();
 
+        app = (DiaryApplication) getApplication(); //获得我们的应用程序MyApplication
+        Cursor cursor = sqLiteDatabase.query("Diary", null, "userid=?", new String[]{app.getName()}, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 String date = cursor.getString(cursor.getColumnIndex("date"));
@@ -138,7 +147,10 @@ public class MainActivity extends AppCompatActivity {
                 String title = cursor.getString(cursor.getColumnIndex("title"));
                 String content = cursor.getString(cursor.getColumnIndex("content"));
                 String tag = cursor.getString(cursor.getColumnIndex("tag"));
-                mDiaryBeanList.add(new DiaryBean(date, title, content, tag));
+                String id = cursor.getString(cursor.getColumnIndex("id"));
+                String analysedResult = cursor.getString(cursor.getColumnIndex("analysedResult"));
+
+                diaryList.add(new DiaryBean(date, title, content, tag, id, analysedResult));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -156,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         String title = mDiaryBeanList.get(event.getPosition()).getTitle();
         String content = mDiaryBeanList.get(event.getPosition()).getContent();
         String tag = mDiaryBeanList.get(event.getPosition()).getTag();
+
         UpdateDiaryActivity.startActivity(this, title, content, tag);
 
     }
@@ -168,7 +181,18 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.main_fab_enter_edit)
     public void onClick() {
-        AddDiaryActivity.startActivity(this);
+        Intent intent = getIntent();
+//        String args= intent.getExtras().get("username").toString();
+
+        app = (DiaryApplication) getApplication(); //获得我们的应用程序MyApplication
+
+        Intent activity_change= new Intent(this,  com.ProjectViolet.emotionDiary.ui.AddDiaryActivity.class);    //切换 Activityanother至MainActivity
+        Bundle bundle = new Bundle();// 创建Bundle对象
+        bundle.putString("username",app.getName() );//  放入data值为int型
+        activity_change.putExtras(bundle);// 将Bundle对象放入到Intent上
+        startActivity(activity_change);//  开始跳转
+
+      //  AddDiaryActivity.startActivity(this);
     }
 
     /***

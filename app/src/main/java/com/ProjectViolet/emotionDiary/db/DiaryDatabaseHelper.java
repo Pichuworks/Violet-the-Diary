@@ -19,8 +19,9 @@ public class DiaryDatabaseHelper extends SQLiteOpenHelper {
             + "date text, "
             + "title text, "
             + "tag text, "
-            + "userid integer, "
+            + "userid text, "
             + "analysedFlag integer, "
+            + "analysedResult text, "
             + "content text)";
 
     public static final String CREATE_TEXT_SENTIMENT = "create table DiaryTextSentiment("

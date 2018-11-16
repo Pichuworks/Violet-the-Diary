@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.ProjectViolet.emotionDiary.R;
 import com.ProjectViolet.emotionDiary.db.DiaryDatabaseHelper;
 import com.ProjectViolet.emotionDiary.utils.AppManager;
+import com.ProjectViolet.emotionDiary.utils.DiaryApplication;
 import com.ProjectViolet.emotionDiary.utils.GetDate;
 import com.ProjectViolet.emotionDiary.utils.StatusBarCompat;
 import com.ProjectViolet.emotionDiary.widget.LinedEditText;
@@ -29,6 +30,55 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.trity.floatingactionbutton.FloatingActionButton;
 import cc.trity.floatingactionbutton.FloatingActionsMenu;
+
+import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ProjectViolet.emotionDiary.R;
+import com.ProjectViolet.emotionDiary.bean.DiaryBean;
+import com.ProjectViolet.emotionDiary.event.StartUpdateDiaryEvent;
+import com.ProjectViolet.emotionDiary.utils.DiaryApplication;
+import com.ProjectViolet.emotionDiary.utils.GetDate;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.w3c.dom.Text;
+
+import android.os.Bundle;
+import android.util.Log;
+
+import static java.lang.Thread.sleep;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Created by 李 on 2017/1/26.
@@ -58,6 +108,9 @@ public class AddDiaryActivity extends AppCompatActivity {
     ImageView mCommonIvTest;
 
     private DiaryDatabaseHelper mHelper;
+    public DiaryApplication app;
+    private String baseURL = "http://47.100.0.222:2000/emotion/get?text=";
+    private String tab_result = "";
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, AddDiaryActivity.class);
@@ -94,7 +147,16 @@ public class AddDiaryActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.common_iv_back:
-                MainActivity.startActivity(this);
+                Intent intent = getIntent();
+                String args= intent.getExtras().get("username").toString();
+                Intent activity_change= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                Bundle bundle = new Bundle();// 创建Bundle对象
+                bundle.putString("username",args );//  放入data值为int型
+                activity_change.putExtras(bundle);// 将Bundle对象放入到Intent上
+                startActivity(activity_change);//  开始跳转
+
+
+                //MainActivity.startActivity(this);
             case R.id.add_diary_et_title:
                 break;
             case R.id.add_diary_et_content:
@@ -107,14 +169,63 @@ public class AddDiaryActivity extends AppCompatActivity {
                 if (!title.equals("") || !content.equals("")) {
                     SQLiteDatabase db = mHelper.getWritableDatabase();
                     ContentValues values = new ContentValues();
+
+                    Intent intent2 = getIntent();
+                    String args2= intent2.getExtras().get("username").toString();
+//                    int a = Integer.parseInt(args2);
+                    String a = args2;
+                    app = (DiaryApplication) getApplication(); //获得我们的应用程序MyApplication
+                    values.put("userid",app.getName());
+
+                    // String args= intent.getExtras().get("username").toString();
+                    // int a = Integer.parseInt(args); // username
+
+                    String url = baseURL + title + "%20" + content;
+                    url = url.replaceAll(" ", "%20");
+                    url = url.replaceAll("\\n", "%20");
+                    final HttpGet httpGet = new HttpGet(url);
+                    final HttpClient httpClient = new DefaultHttpClient();
+
+                    new Thread(new Runnable(){
+                        @Override
+                        public void run() {
+                            // 发送请求
+                            try
+                            {
+                                HttpResponse response = httpClient.execute(httpGet);
+                                tab_result = showResponseResult(response);   // 显示返回结果
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
+                    // 睡眠同步 又不是不能用
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                     values.put("date", date);
                     values.put("title", title);
                     values.put("content", content);
                     values.put("tag", tag);
+                    values.put("analysedResult", tab_result);
                     db.insert("Diary", null, values);
                     values.clear();
                 }
-                MainActivity.startActivity(this);
+                Intent intent3 = getIntent();
+                String args3= intent3.getExtras().get("username").toString();
+                Intent activity_change3= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                Bundle bundle3 = new Bundle();// 创建Bundle对象
+                bundle3.putString("username",args3 );//  放入data值为int型
+                activity_change3.putExtras(bundle3);// 将Bundle对象放入到Intent上
+                startActivity(activity_change3);//  开始跳转
+
+               // MainActivity.startActivity(this);
                 break;
             case R.id.add_diary_fab_add:
                 final String dateBack = GetDate.getDate().toString();
@@ -124,31 +235,129 @@ public class AddDiaryActivity extends AppCompatActivity {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                     alertDialogBuilder.setMessage("是否保存日记内容？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+
+                            Intent intent = getIntent();
+                            String args= intent.getExtras().get("username").toString();
+                            // int a = Integer.parseInt(args); // username
+
+                            String url = baseURL + titleBack + "%20" + contentBack;
+                            url = url.replaceAll(" ", "%20");
+                            url = url.replaceAll("\\n", "%20");
+                            final HttpGet httpGet = new HttpGet(url);
+                            final HttpClient httpClient = new DefaultHttpClient();
+
+                            new Thread(new Runnable(){
+                                @Override
+                                public void run() {
+                                    // 发送请求
+                                    try
+                                    {
+                                        HttpResponse response = httpClient.execute(httpGet);
+                                        tab_result = showResponseResult(response);   // 显示返回结果
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }).start();
+
+                            // 睡眠同步 又不是不能用
+                            try {
+                                sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+
                             SQLiteDatabase db = mHelper.getWritableDatabase();
                             ContentValues values = new ContentValues();
                             values.put("date", dateBack);
                             values.put("title", titleBack);
                             values.put("content", contentBack);
+                            // values.put("userid",a);
+                            values.put("userid", args);
+                            values.put("analysedResult", tab_result);
                             db.insert("Diary", null, values);
                             values.clear();
-                            MainActivity.startActivity(AddDiaryActivity.this);
+
+                            Intent intent4 = getIntent();
+                            String args4= intent4.getExtras().get("username").toString();
+                            Intent activity_change4= new Intent(AddDiaryActivity.this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                            Bundle bundle4 = new Bundle();// 创建Bundle对象
+                            bundle4.putString("username",args4 );//  放入data值为int型
+                            activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                            startActivity(activity_change4);//  开始跳转
+
+                           // MainActivity.startActivity(AddDiaryActivity.this);
                         }
                     }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            MainActivity.startActivity(AddDiaryActivity.this);
+                            Intent intent4 = getIntent();
+                            String args4= intent4.getExtras().get("username").toString();
+                            Intent activity_change4= new Intent(AddDiaryActivity.this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                            Bundle bundle4 = new Bundle();// 创建Bundle对象
+                            bundle4.putString("username",args4 );//  放入data值为int型
+                            activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                            startActivity(activity_change4);//  开始跳转
+                          //  MainActivity.startActivity(AddDiaryActivity.this);
                         }
                     }).show();
                 }else{
-                    MainActivity.startActivity(this);
+                    Intent intent4 = getIntent();
+                    String args4= intent4.getExtras().get("username").toString();
+                    Intent activity_change4= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                    Bundle bundle4 = new Bundle();// 创建Bundle对象
+                    bundle4.putString("username",args4 );//  放入data值为int型
+                    activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                    startActivity(activity_change4);//  开始跳转
+                    //MainActivity.startActivity(this);
                 }
                 break;
         }
     }
 
+    private String showResponseResult(HttpResponse response)
+    {
+        if (null == response)
+        {
+            return "";
+        }
+
+        HttpEntity httpEntity = response.getEntity();
+        try
+        {
+            InputStream inputStream = httpEntity.getContent();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    inputStream));
+            String result = "";
+            String line = "";
+            while (null != (line = reader.readLine()))
+            {
+                result += line;
+            }
+            System.out.println(result);
+            Log.d("Analysis Result",result);
+            return result;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return tab_result;
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        MainActivity.startActivity(this);
+        Intent intent4 = getIntent();
+        String args4= intent4.getExtras().get("username").toString();
+        Intent activity_change4= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+        Bundle bundle4 = new Bundle();// 创建Bundle对象
+        bundle4.putString("username",args4 );//  放入data值为int型
+        activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+        startActivity(activity_change4);//  开始跳转
+        //MainActivity.startActivity(this);
     }
 }
 
