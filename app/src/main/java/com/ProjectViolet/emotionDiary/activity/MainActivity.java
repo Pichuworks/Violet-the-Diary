@@ -20,6 +20,7 @@ import com.ProjectViolet.emotionDiary.R;
 import com.ProjectViolet.emotionDiary.adapter.UserAdapter;
 import com.ProjectViolet.emotionDiary.bean.User;
 import com.ProjectViolet.emotionDiary.util.SqliteHelper;
+import com.ProjectViolet.emotionDiary.utils.DiaryApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private UserAdapter adapter;
     private TextView tv_me;
     private Button toUserSummary;
+
+    public DiaryApplication app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,11 +120,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         getData();
                     }
                 }else if (which == 3){
+                    /*
                     Intent intent = new Intent(MainActivity.this, com.ProjectViolet.emotionDiary.ui.MainActivity.class);
                     intent.putExtra("username", userList.get(position).getUsername());
                     Log.d("fuckyou--Admin", "username: " + userList.get(position).getUsername());
                     Toast.makeText(MainActivity.this, userList.get(position).getUsername(), Toast.LENGTH_SHORT).show();
                     startActivity(intent);
+                    */
+
+                    app = (DiaryApplication) getApplication();
+                    String username = userList.get(position).getUsername();
+                    app.setName(username);  //OK，现在我们开始修改了
+                    Intent activity_change= new Intent(MainActivity.this, com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                    Bundle bundle = new Bundle();// 创建Bundle对象
+                    bundle.putString("username",username );
+                    activity_change.putExtras(bundle);// 将Bundle对象放入到Intent上
+                    startActivity(activity_change);//  开始跳转
                 }
 
             }

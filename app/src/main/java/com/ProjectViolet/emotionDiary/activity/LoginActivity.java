@@ -122,12 +122,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 bundle.putString("username",username );
                 activity_change.putExtras(bundle);// 将Bundle对象放入到Intent上
                 startActivity(activity_change);//  开始跳转
+                finish();
 
 
             }
             else if(user.getType()==0)
                 startActivity(new Intent(this, com.ProjectViolet.emotionDiary.activity.MainActivity.class));
-
+                finish();
             /*****/
         } else {
             Toast.makeText(this, "账号或密码错误", Toast.LENGTH_SHORT).show();

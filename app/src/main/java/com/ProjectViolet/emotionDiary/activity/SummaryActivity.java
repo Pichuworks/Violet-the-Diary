@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.support.v7.app.AppCompatActivity;
 
 import com.ProjectViolet.emotionDiary.R;
 import com.ProjectViolet.emotionDiary.adapter.SummaryAdapter;
@@ -28,7 +29,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
-public class SummaryActivity extends Activity {
+public class SummaryActivity extends AppCompatActivity {
     private List<UserSummary> userSummaries = new ArrayList<UserSummary>();
     private List<UserDiaryStatus> userDiaryStatusList = new ArrayList<UserDiaryStatus>();
     private DiaryDatabaseHelper mHelper;
