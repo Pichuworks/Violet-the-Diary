@@ -6,6 +6,12 @@
     android:orientation="vertical"
     tools:context=".activity.LoginActivity">
 
+    <Button
+        android:id="@+id/to_user_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="用户情感统计"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

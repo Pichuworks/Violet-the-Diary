@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +30,23 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.trity.floatingactionbutton.FloatingActionButton;
 import cc.trity.floatingactionbutton.FloatingActionsMenu;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.w3c.dom.Text;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Created by 李 on 2017/1/26.
@@ -63,6 +81,8 @@ public class UpdateDiaryActivity extends AppCompatActivity {
 
     private DiaryDatabaseHelper mHelper;
     private DiaryApplication app;
+    private String baseURL = "http://47.100.0.222:2000/emotion/get?text=";
+    private String tab_result = "";
 
     public static void startActivity(Context context, String title, String content, String tag) {
         Intent intent = new Intent(context, UpdateDiaryActivity.class);
@@ -88,9 +108,6 @@ public class UpdateDiaryActivity extends AppCompatActivity {
         mUpdateDiaryEtTitle.setText(intent.getStringExtra("title"));
         mUpdateDiaryEtContent.setText(intent.getStringExtra("content"));
         mTvTag.setText(intent.getStringExtra("tag"));
-
-
-
     }
 
     private void initTitle() {
@@ -103,11 +120,8 @@ public class UpdateDiaryActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.common_iv_back:
-
                 app = (DiaryApplication) getApplication(); //获得我们的应用程序MyApplication
-
-
-                Intent activity_change4= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                Intent activity_change4= new Intent(this, com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
                 Bundle bundle4 = new Bundle();// 创建Bundle对象
                 bundle4.putString("username", app.getName());//  放入data值为int型
                 activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
@@ -129,13 +143,12 @@ public class UpdateDiaryActivity extends AppCompatActivity {
                         String content = mUpdateDiaryEtContent.getText().toString();
                         String tag = mTvTag.getText().toString();
 
-
                         SQLiteDatabase dbDelete = mHelper.getWritableDatabase();
                         dbDelete.delete("Diary", "content=?", new String[]{content});
 
                         app = (DiaryApplication) getApplication(); //获得我们的应用程序MyApplication
 
-                        Intent activity_change4= new Intent(UpdateDiaryActivity.this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
+                        Intent activity_change4= new Intent(UpdateDiaryActivity.this, com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
                         Bundle bundle4 = new Bundle();// 创建Bundle对象
                         bundle4.putString("username",app.getName() );//  放入data值为int型
                         activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
@@ -154,11 +167,45 @@ public class UpdateDiaryActivity extends AppCompatActivity {
                 ContentValues valuesUpdate = new ContentValues();
                 String title = mUpdateDiaryEtTitle.getText().toString();
                 String content = mUpdateDiaryEtContent.getText().toString();
+
                 valuesUpdate.put("title", title);
                 valuesUpdate.put("content", content);
+
+                // 更新emoji
+                // 在这里更新数据
+                String url = baseURL + title + "%20" + content;
+                url = url.replaceAll(" ", "%20");
+                url = url.replaceAll("\\n", "%20");
+                final HttpGet httpGet = new HttpGet(url);
+                final HttpClient httpClient = new DefaultHttpClient();
+
+                new Thread(new Runnable(){
+                    @Override
+                    public void run() {
+                        // 发送请求
+                        try
+                        {
+                            HttpResponse response = httpClient.execute(httpGet);
+                            tab_result = showResponseResult(response);   // 显示返回结果
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+                // 睡眠同步 又不是不能用
+                try {
+                    sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                valuesUpdate.put("analysedResult", tab_result);
+
                 dbUpdate.update("Diary", valuesUpdate, "title = ?", new String[]{title});
                 dbUpdate.update("Diary", valuesUpdate, "content = ?", new String[]{content});
-
+                dbUpdate.update("Diary", valuesUpdate, "analysedResult = ?", new String[]{tab_result});
 
                 MainActivity.startActivity(this);
                 break;
@@ -168,6 +215,36 @@ public class UpdateDiaryActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    private String showResponseResult(HttpResponse response)
+    {
+        if (null == response)
+        {
+            return "";
+        }
+
+        HttpEntity httpEntity = response.getEntity();
+        try
+        {
+            InputStream inputStream = httpEntity.getContent();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    inputStream));
+            String result = "";
+            String line = "";
+            while (null != (line = reader.readLine()))
+            {
+                result += line;
+            }
+            System.out.println(result);
+            Log.d("Analysis Result",result);
+            return result;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return tab_result;
     }
 
     @OnClick(R.id.common_tv_title)

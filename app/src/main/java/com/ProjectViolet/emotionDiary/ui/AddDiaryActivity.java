@@ -80,9 +80,6 @@ import static java.lang.Thread.sleep;
 
 import static java.lang.Thread.sleep;
 
-/**
- * Created by 李 on 2017/1/26.
- */
 public class AddDiaryActivity extends AppCompatActivity {
 
     @Bind(R.id.add_diary_tv_date)
@@ -214,6 +211,9 @@ public class AddDiaryActivity extends AppCompatActivity {
                     values.put("content", content);
                     values.put("tag", tag);
                     values.put("analysedResult", tab_result);
+
+                    Log.d("fuckyou--AddDiary", "content: " + content + " tab_result: " + tab_result);
+
                     db.insert("Diary", null, values);
                     values.clear();
                 }
@@ -278,6 +278,7 @@ public class AddDiaryActivity extends AppCompatActivity {
                             // values.put("userid",a);
                             values.put("userid", args);
                             values.put("analysedResult", tab_result);
+                            Log.d("fuckyou--AddDiary2", "content: " + contentBack + " tab_result: " + tab_result);
                             db.insert("Diary", null, values);
                             values.clear();
 

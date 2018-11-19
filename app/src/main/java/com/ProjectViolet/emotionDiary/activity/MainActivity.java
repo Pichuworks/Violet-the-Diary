@@ -7,8 +7,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,15 +29,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ListView listView;
     private UserAdapter adapter;
     private TextView tv_me;
+    private Button toUserSummary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_login);
         initView();
-
         getData();
-
+        toUserSummary = (Button) findViewById(R.id.to_user_summary);
+        toUserSummary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, SummaryActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     private void getData() {
@@ -55,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         listView.setOnItemClickListener(this);
         tv_me = (TextView) findViewById(R.id.tv_me);
         tv_me.setOnClickListener(this);
+
     }
 
     private String[] strings = null;
@@ -107,8 +117,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         getData();
                     }
                 }else if (which == 3){
-                    Intent intent = new Intent(MainActivity.this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);
+                    Intent intent = new Intent(MainActivity.this, com.ProjectViolet.emotionDiary.ui.MainActivity.class);
                     intent.putExtra("username", userList.get(position).getUsername());
+                    Log.d("fuckyou--Admin", "username: " + userList.get(position).getUsername());
                     Toast.makeText(MainActivity.this, userList.get(position).getUsername(), Toast.LENGTH_SHORT).show();
                     startActivity(intent);
                 }

@@ -31,7 +31,7 @@
                 android:layout_height="30dp"
                 android:gravity="center_vertical"
                 android:paddingRight="5dp"
-                android:text="今天，2017年01月19日"
+                android:text="今天，2018年01月19日"
                 android:textSize="15sp"
                 />
 
