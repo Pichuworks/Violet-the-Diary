@@ -133,6 +133,8 @@ public class AddDiaryActivity extends AppCompatActivity {
         mAddDiaryEtTitle.setText(intent.getStringExtra("title"));
         StatusBarCompat.compat(this, Color.parseColor("#161414"));
 
+        app = (DiaryApplication) getApplication();
+
         mCommonTvTitle.setText("添加日记");
         mAddDiaryTvDate.setText("今天，" + GetDate.getDate());
         mAddDiaryEtContent.setText(intent.getStringExtra("content"));
@@ -149,8 +151,11 @@ public class AddDiaryActivity extends AppCompatActivity {
                 Intent activity_change= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
                 Bundle bundle = new Bundle();// 创建Bundle对象
                 bundle.putString("username",args );//  放入data值为int型
+                app.setName(args);
                 activity_change.putExtras(bundle);// 将Bundle对象放入到Intent上
+                Log.d("neko","neko1");
                 startActivity(activity_change);//  开始跳转
+                finish();
 
 
                 //MainActivity.startActivity(this);
@@ -222,8 +227,11 @@ public class AddDiaryActivity extends AppCompatActivity {
                 Intent activity_change3= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
                 Bundle bundle3 = new Bundle();// 创建Bundle对象
                 bundle3.putString("username",args3 );//  放入data值为int型
+                app.setName(args3);
                 activity_change3.putExtras(bundle3);// 将Bundle对象放入到Intent上
+                Log.d("neko","neko3");
                 startActivity(activity_change3);//  开始跳转
+                finish();
 
                // MainActivity.startActivity(this);
                 break;
@@ -288,6 +296,7 @@ public class AddDiaryActivity extends AppCompatActivity {
                             Bundle bundle4 = new Bundle();// 创建Bundle对象
                             bundle4.putString("username",args4 );//  放入data值为int型
                             activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                            Log.d("neko","neko4");
                             startActivity(activity_change4);//  开始跳转
 
                            // MainActivity.startActivity(AddDiaryActivity.this);
@@ -299,8 +308,11 @@ public class AddDiaryActivity extends AppCompatActivity {
                             Intent activity_change4= new Intent(AddDiaryActivity.this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
                             Bundle bundle4 = new Bundle();// 创建Bundle对象
                             bundle4.putString("username",args4 );//  放入data值为int型
+                            app.setName(args4);
                             activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                            Log.d("neko","neko5");
                             startActivity(activity_change4);//  开始跳转
+                            finish();
                           //  MainActivity.startActivity(AddDiaryActivity.this);
                         }
                     }).show();
@@ -310,8 +322,11 @@ public class AddDiaryActivity extends AppCompatActivity {
                     Intent activity_change4= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
                     Bundle bundle4 = new Bundle();// 创建Bundle对象
                     bundle4.putString("username",args4 );//  放入data值为int型
+                    app.setName(args4);
                     activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                    Log.d("neko","neko6");
                     startActivity(activity_change4);//  开始跳转
+                    finish();
                     //MainActivity.startActivity(this);
                 }
                 break;
@@ -350,14 +365,19 @@ public class AddDiaryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        app = (DiaryApplication) getApplication();
         super.onBackPressed();
+        Log.d("nekoneko", "nekoneko");
         Intent intent4 = getIntent();
         String args4= intent4.getExtras().get("username").toString();
         Intent activity_change4= new Intent(this,  com.ProjectViolet.emotionDiary.ui.MainActivity.class);    //切换 Activityanother至MainActivity
         Bundle bundle4 = new Bundle();// 创建Bundle对象
         bundle4.putString("username",args4 );//  放入data值为int型
+        app.setName(args4);
         activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+        Log.d("neko","neko7");
         startActivity(activity_change4);//  开始跳转
+        finish();
         //MainActivity.startActivity(this);
     }
 }

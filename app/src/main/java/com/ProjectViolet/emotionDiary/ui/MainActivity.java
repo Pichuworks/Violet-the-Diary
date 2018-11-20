@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         String tag = mDiaryBeanList.get(event.getPosition()).getTag();
 
         UpdateDiaryActivity.startActivity(this, title, content, tag);
+        finish();
 
     }
 
@@ -194,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("username",app.getName() );//  放入data值为int型
         activity_change.putExtras(bundle);// 将Bundle对象放入到Intent上
         startActivity(activity_change);//  开始跳转
+        finish();
 
       //  AddDiaryActivity.startActivity(this);
     }

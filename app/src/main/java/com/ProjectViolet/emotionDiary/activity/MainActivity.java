@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Button toUserSummary;
 
     public DiaryApplication app;
+
+    private long mExitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,5 +156,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //我的
         Intent intent = new Intent(this, MeActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void exit() {
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        } else {
+            finish();
+            System.exit(0);
+        }
     }
 }

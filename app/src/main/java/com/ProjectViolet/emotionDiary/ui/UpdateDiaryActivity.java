@@ -103,6 +103,8 @@ public class UpdateDiaryActivity extends AppCompatActivity {
         initTitle();
         StatusBarCompat.compat(this, Color.parseColor("#161414"));
 
+        app = (DiaryApplication) getApplication();
+
         Intent intent = getIntent();
         mUpdateDiaryTvDate.setText("今天，" + GetDate.getDate());
         mUpdateDiaryEtTitle.setText(intent.getStringExtra("title"));
@@ -125,7 +127,9 @@ public class UpdateDiaryActivity extends AppCompatActivity {
                 Bundle bundle4 = new Bundle();// 创建Bundle对象
                 bundle4.putString("username", app.getName());//  放入data值为int型
                 activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                Log.d("nekochan","0");
                 startActivity(activity_change4);//  开始跳转
+                finish();
                // MainActivity.startActivity(this);
             case R.id.update_diary_tv_date:
                 break;
@@ -152,7 +156,9 @@ public class UpdateDiaryActivity extends AppCompatActivity {
                         Bundle bundle4 = new Bundle();// 创建Bundle对象
                         bundle4.putString("username",app.getName() );//  放入data值为int型
                         activity_change4.putExtras(bundle4);// 将Bundle对象放入到Intent上
+                        Log.d("nekochan","1");
                         startActivity(activity_change4);//  开始跳转
+                        finish();
 
 
                         //MainActivity.startActivity(UpdateDiaryActivity.this);
@@ -207,11 +213,15 @@ public class UpdateDiaryActivity extends AppCompatActivity {
                 dbUpdate.update("Diary", valuesUpdate, "content = ?", new String[]{content});
                 dbUpdate.update("Diary", valuesUpdate, "analysedResult = ?", new String[]{tab_result});
 
+                Log.d("nekochan","2");
                 MainActivity.startActivity(this);
+                finish();
                 break;
             case R.id.update_diary_fab_delete:
 
+                Log.d("nekochan","3");
                 MainActivity.startActivity(this);
+                finish();
 
                 break;
         }
@@ -254,6 +264,8 @@ public class UpdateDiaryActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Log.d("nekochan","4");
         MainActivity.startActivity(this);
+        finish();
     }
 }
